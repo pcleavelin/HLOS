@@ -32,8 +32,9 @@ dap_read_to_segment: dw 0x0
 dap_sector_to_read_lo: dd 0x00000000
 dap_sector_to_read_hi: dd 0x00000000
 
-;unsigned char read_file(const char* filename);
-fat8_read_file:
+;unsigned char fat8_read_file(const char* filename, unsigned int load_addr);
+global _fat8_read_file
+_fat8_read_file:
     push bp
     mov bp, sp
     sub sp, 4
@@ -47,7 +48,7 @@ fat8_read_file:
 
         ;bx is which root dir sector to read from (0 or 1)
         push bx
-        call fat8_load_root_dir
+        call _fat8_load_root_dir
         add sp, 2
         
         ;Move the first parameter into ax then pass it to the
@@ -78,6 +79,7 @@ fat8_read_file:
         call _screen_print_string
         add sp, 2
         
+        push word[bp+6]
         push word[bp-4]
         call fat8_load_file_from_disk
         add sp, 2
@@ -87,7 +89,7 @@ fat8_read_file:
     pop bp
     ret
 
-;word fat8_load_file_from_disk(word fat_index)
+;word fat8_load_file_from_disk(word fat_index, word load_addr)
 fat8_load_file_from_disk:
     push bp
     mov bp, sp
@@ -124,7 +126,7 @@ fat8_load_file_from_disk:
             dec bx
             add bx, FAT_LOAD_ADDR
 
-            mov ax, FILE_LOAD_ADDR
+            mov ax, word[bp+6]
             .fat8_load_file_loop_read:
                 mov [dap_read_to_offset], ax
 
@@ -161,7 +163,7 @@ fat8_load_file_from_disk:
                 pop ax
 
                 ;return the location of the file in memory
-                mov ax, FILE_LOAD_ADDR
+                mov ax, word[bp+6]
 
     .fat8_load_file_done:
     mov sp, bp
@@ -184,7 +186,8 @@ fat8_load_fat:
 
 
 ;void fat8_load_root_dir(int sector)
-fat8_load_root_dir:
+global _fat8_load_root_dir
+_fat8_load_root_dir:
     push bp
     mov bp, sp
 

@@ -14,5 +14,5 @@ start:
     pop bp
     ret
 
-%include "Kernel/IO/screen.inc"
 %include "Kernel/IO/keyboard.inc"
+%include "Kernel/IO/fat8.inc"

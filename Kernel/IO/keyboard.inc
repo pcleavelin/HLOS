@@ -1,6 +1,7 @@
 ;(C) Patrick Cleavelin <patrick@uptrainsoftware.com>
 ;This is a basic shell for the OS
 
+;unsigned int keyboard_get_key(void);
 global _keyboard_get_key
 _keyboard_get_key:
     push bp

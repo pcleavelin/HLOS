@@ -110,13 +110,16 @@ shell_handle_input:
     push bp
     mov bp, sp
 
+    mov ax, 0x4000
+
+    push ax
     push shell_input_buffer
-    call fat8_read_file
+    call _fat8_read_file
     add sp, 2
 
     cmp ax, 1 
     jle .skip_call
-    call 0x4000
+    call ax
     .skip_call:
 
     mov sp, bp
