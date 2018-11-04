@@ -1,6 +1,12 @@
-.idea/
-/*/build/**
 Kernel/bin/*
 Programs/bin/*
+
+# Output files
 *.o
 *.flp
+*.iso
+iso/
+stage2_eltorito
+
+# Bochs
+bochslog.txt
